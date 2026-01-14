@@ -71,7 +71,7 @@ const getPurposeClass = () => {
             </TableCell>
           </TableRow>
         ) : (
-          data.map((row) => (
+          data?.map((row) => (
             <TableRow key={row.invite_id}>
               <TableCell>{row.invite_code}</TableCell>
               <TableCell>{row.visitor_name}</TableCell>

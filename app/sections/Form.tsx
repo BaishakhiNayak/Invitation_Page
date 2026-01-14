@@ -1,13 +1,18 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
-import {
-  getVisitorTypes,
-  getPurposes,
-  getLocations,
-} from "@/services/master.service";
-import { createInvitation, updateInvitation } from "@/services/invitation.service";
+
+//import InvitationService from "@/services/invitation.service";
+import MasterService from "@/services/master.service";
+
 import { MdClose } from "react-icons/md";
+import { toast } from 'react-toastify';
+
+
+import CrudService from "@/services/crud.service";
+import { CrudModules } from "@/lib/endpoints";
+
+
 
 import {
   AlertDialog,
@@ -21,6 +26,8 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import * as yup from "yup";
+
+const crudService = new CrudService();
 
 export const invitationSchema = yup.object({
   name: yup.string().required("Name required"),
@@ -49,11 +56,24 @@ const Form = ({ onCancel, onSuccess, editData }: any) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [formData, setformData] = useState<any>(null);
 
+
+  const loadMasters = async () => {
+    try {
+      const vtRes = await MasterService.getByModule(3); 
+      const pRes  = await MasterService.getByModule(4); 
+      const lRes  = await MasterService.getByModule(5); 
+
+      setVisitorTypes(vtRes.data);
+      setPurposes(pRes.data);
+      setLocations(lRes.data);
+    } catch (err) {
+      console.error("Failed to load masters", err);
+    }
+  };
+
   
   useEffect(() => {
-    getVisitorTypes().then(setVisitorTypes);
-    getPurposes().then(setPurposes);
-    getLocations().then(setLocations);
+    loadMasters();
   }, [])
 
   const getMinDateTime = () => {
@@ -270,17 +290,22 @@ useEffect(() => {
         
         console.log("PAYLOAD : ", payload);
 
-       let res;
+        try{let res;
 
         if (editData) {
-          res = await updateInvitation(editData.invite_id, payload);
+          //res = await InvitationService.updateInvitation(editData.invite_id, payload);
+          res = await crudService.update(CrudModules.Invitation, editData.invite_id, payload);
+          toast.success("Invitation updated successfully!");
         } else {
-          res = await createInvitation(payload);
+          res = await crudService.submit(CrudModules.Invitation, payload);
+          toast.success("Invitation created successfully!");
         }
 
         onSuccess(res.data);
         setConfirmOpen(false);
-
+        } catch (error) {
+          toast.error("An error occurred. Please try again.");
+        }
         }}
       >
       Yes
