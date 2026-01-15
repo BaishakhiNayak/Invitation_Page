@@ -64,7 +64,7 @@ const getPurposeClass = () => {
       </TableHeader>
 
       <TableBody>
-        {data.length === 0 ? (
+        {data.length < 0 ? (
           <TableRow>
             <TableCell colSpan={7} className="text-center">
               No data

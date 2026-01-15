@@ -73,7 +73,7 @@ export default function Invitation() {
                 setEditData(null);
               }}
               onSuccess={async () => {
-                await fetchData(); 
+                await fetchData(page); 
                 setOpen(false);
                 setEditData(null);
               }}
