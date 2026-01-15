@@ -18,6 +18,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
+import Loader from "@/components/ui/Loader";
+
 
 const crudService = new CrudService();
 
@@ -45,7 +47,6 @@ export default function Invitation() {
   });
       console.log(res);
       setTableData(res.data.data);
-
 
     const totalRecords = res.data.total ??  10;
     setTotalPages(Math.ceil(totalRecords / limit));
@@ -81,14 +82,8 @@ export default function Invitation() {
           </div>
         </div>
       )}
-      {loading ? (
-      <div className="flex justify-center items-center h-60">
-        <div className="flex flex-col items-center gap-2">
-          <div className="h-8 w-8 border-4 border-gray-300 border-t-black rounded-full animate-spin" />
-          <p className="text-sm text-gray-500">Loading...</p>
-        </div>
-      </div>
-      ) : (
+      {loading ? <Loader/> : (
+        <>
       <Table
         data={tableData}
         onEdit={(row) => {
@@ -111,7 +106,7 @@ export default function Invitation() {
           }
         }}
       />
-      )}
+      
       <Pagination className="mt-4">
       <PaginationContent>
 
@@ -139,6 +134,8 @@ export default function Invitation() {
 
       </PaginationContent>
     </Pagination>
+    </>
+    )}
     </>
   );
 }

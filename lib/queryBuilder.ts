@@ -5,7 +5,7 @@ type Sort = {
 
 type Filter = {
   field: string;
-  operator: "$eq" | "$ne" | "$like";
+  operator: "$eq" | "$in" | "$like";
   value: string | number;
 };
 
