@@ -64,10 +64,10 @@ const getPurposeClass = () => {
       </TableHeader>
 
       <TableBody>
-        {data.length < 0 ? (
-          <TableRow>
-            <TableCell colSpan={7} className="text-center">
-              No data
+        {data.length <= 0 ? (
+          <TableRow >
+            <TableCell colSpan={7} className="text-center text-red-500 py-4 ">
+              Unable to find any data. 
             </TableCell>
           </TableRow>
         ) : (

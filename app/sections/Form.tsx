@@ -119,7 +119,7 @@ useEffect(() => {
     </button>
 
   {/* Row 1: Name + Mobile */}
-  <div className="grid grid-cols-2 gap-4">
+  <div className="grid grid-cols-2 gap-4 mb-3">
 
     <div>
       <label className="block text-sm font-medium mb-1">Mobile No *</label>
@@ -150,7 +150,7 @@ useEffect(() => {
   </div>
 
   {/* Row 3: Visitor Type + Purpose */}
-  <div className="grid grid-cols-2 gap-4">
+  <div className="grid grid-cols-2 gap-4 my-3">
     <div>
       <label className="block text-sm font-medium mb-1">
         Visitor Type *
@@ -192,7 +192,7 @@ useEffect(() => {
     </div>
   </div>
   {/* Row 4: Date & Time + Location */}
-  <div className="grid grid-cols-2 gap-4">
+  <div className="grid grid-cols-2 gap-4 mb-3">
     <div className="flex flex-col gap-1">
       <label className="text-sm font-medium">Date & Time *</label>
       <input
