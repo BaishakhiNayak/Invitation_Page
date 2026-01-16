@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 
-//import InvitationService from "@/services/invitation.service";
+
 import MasterService from "@/services/master.service";
 
 import { MdClose } from "react-icons/md";
@@ -11,6 +11,8 @@ import { toast } from 'react-toastify';
 
 import CrudService from "@/services/crud.service";
 import { CrudModules } from "@/lib/endpoints";
+
+import { GENERIC_MASTER_MODULES } from "@/lib/endpoints";
 
 
 
@@ -59,9 +61,9 @@ const Form = ({ onCancel, onSuccess, editData }: any) => {
 
   const loadMasters = async () => {
     try {
-      const vtRes = await MasterService.getByModule(3); 
-      const pRes  = await MasterService.getByModule(4); 
-      const lRes  = await MasterService.getByModule(5); 
+      const vtRes = await MasterService.getByModule(GENERIC_MASTER_MODULES.VisitorType); 
+      const pRes  = await MasterService.getByModule(GENERIC_MASTER_MODULES.Purpose); 
+      const lRes  = await MasterService.getByModule(GENERIC_MASTER_MODULES.Location); 
 
       setVisitorTypes(vtRes.data);
       setPurposes(pRes.data);
@@ -293,7 +295,6 @@ useEffect(() => {
         try{let res;
 
         if (editData) {
-          //res = await InvitationService.updateInvitation(editData.invite_id, payload);
           res = await crudService.update(CrudModules.Invitation, editData.invite_id, payload);
           toast.success("Invitation updated successfully!");
         } else {

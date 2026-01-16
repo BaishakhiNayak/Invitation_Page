@@ -61,6 +61,25 @@ export default function Invitation() {
     fetchData(page);
   }, [page]);
 
+  const handleCancelInvitation = async (row: any) => {
+  try {
+    await crudService.delete(CrudModules.InvitationCancel, row.invite_id);
+
+    toast.success("Invitation cancelled successfully!");
+
+    setTableData((prev) =>
+      prev.map((r) =>
+        r.invite_id === row.invite_id
+          ? { ...r, status_name: "Cancelled" }
+          : r
+      )
+    );
+  } catch (err) {
+    toast.error("Failed to cancel invitation.");
+  }
+};
+
+
   return (
     <>
       <Header onNewClick={() => setOpen(true)} />
@@ -90,21 +109,7 @@ export default function Invitation() {
           setEditData(row);
           setOpen(true);
         }}
-        onCancel={async (row) => {
-          try { 
-            await crudService.delete(CrudModules.InvitationCancel, row.invite_id);
-            toast.success("Invitation cancelled successfully!");
-            setTableData((prev) =>
-              prev.map((r) =>
-                r.invite_id === row.invite_id
-                  ? { ...r, status_name: "Cancelled" }
-                  : r
-              )
-            );
-          } catch (err) {
-            toast.error("Failed to cancel invitation.");
-          }
-        }}
+        onCancel={handleCancelInvitation}
       />
       
       <Pagination className="mt-4">
