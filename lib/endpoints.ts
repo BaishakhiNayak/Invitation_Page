@@ -6,7 +6,7 @@ export enum CrudModules {
   GenericMaster = "generic-masters",
 }
 
-export enum GENERIC_MASTER_MODULES {
+export enum GenericMasterModules {
   VisitorType = 3,
   Purpose = 4,
   Location = 5,

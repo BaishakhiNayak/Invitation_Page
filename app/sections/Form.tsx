@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 import CrudService from "@/services/crud.service";
 import { CrudModules } from "@/lib/endpoints";
 
-import { GENERIC_MASTER_MODULES } from "@/lib/endpoints";
+import { GenericMasterModules } from "@/lib/endpoints";
 
 
 
@@ -61,9 +61,9 @@ const Form = ({ onCancel, onSuccess, editData }: any) => {
 
   const loadMasters = async () => {
     try {
-      const vtRes = await MasterService.getByModule(GENERIC_MASTER_MODULES.VisitorType); 
-      const pRes  = await MasterService.getByModule(GENERIC_MASTER_MODULES.Purpose); 
-      const lRes  = await MasterService.getByModule(GENERIC_MASTER_MODULES.Location); 
+      const vtRes = await MasterService.getByModule(GenericMasterModules.VisitorType); 
+      const pRes  = await MasterService.getByModule(GenericMasterModules.Purpose); 
+      const lRes  = await MasterService.getByModule(GenericMasterModules.Location); 
 
       setVisitorTypes(vtRes.data);
       setPurposes(pRes.data);

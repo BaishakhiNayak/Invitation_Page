@@ -18,7 +18,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-import Loader from "@/components/ui/Loader";
+import Loader from "@/components/ui/loader";
 
 
 const crudService = new CrudService();
@@ -41,9 +41,25 @@ export default function Invitation() {
     sorts: [
       { field: "invite_id", order: "DESC" }
     ],
-    filters: [
-      { field: "status", operator: "$in", value: [1,2] }
-    ]
+
+    fields: [
+    "invite_id",
+    "invite_code",
+    "visitor_name",
+    "visitor_mobile",
+    "visitor_email",
+    "visitor_type_name",
+    "visitor_type",
+    "purpose_name",
+    "purpose_id",
+    "invite_date",
+    "location_name",
+    "location_id",
+    "status_name",
+    "status",
+    "visit_id",
+    "comment",
+  ],
   });
       console.log(res);
       setTableData(res.data.data);
