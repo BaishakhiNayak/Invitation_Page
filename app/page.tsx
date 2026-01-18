@@ -1,5 +1,4 @@
-import React from 'react'
-import Invitation from './sections/invitations/Invitation'
+import Invitation from '@/src/features/invitation/Invitation'
 
 const page = () => {
   return (

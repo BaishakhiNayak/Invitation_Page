@@ -1,13 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
- 
-import CrudService from "@/services/crud.service";
-import { CrudModules } from "@/lib/endpoints";
 
-import Header from "../Header";
-import Table from "../Table";
-import Form from "../Form";
 import { toast } from "react-toastify";
 import {
   Pagination,
@@ -18,7 +12,13 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-import Loader from "@/components/ui/Loader";
+import Loader from "@/components/ui/loader";
+import InvitationHeader from "@/src/components/generic/header/InvitationHeader";
+import InvitationForm from "@/src/components/generic/form/InvitationForm";
+import InvitationTable from "@/src/components/generic/table/InvitationTable";
+import CrudService from "@/src/services/crud.service";
+import { CrudModules } from "@/src/core/constant";
+import useCrud from "@/src/hooks/useCrud";
 
 
 const crudService = new CrudService();
@@ -27,12 +27,20 @@ export default function Invitation() {
   const [tableData, setTableData] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const [editData, setEditData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  //const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);   
-  const [totalPages, setTotalPages] = useState(1);
+
+  const {
+  data,
+  load,
+  loading,
+  cancel,
+  totalPages,
+} = useCrud<any>(CrudModules.InvitationView);
+
     
-  const fetchData = async (page:number) => {
+  /*const fetchData = async (page:number) => {
     try {
     setLoading(true); 
     const res =await crudService.items<any[]>(CrudModules.InvitationView, {
@@ -41,9 +49,25 @@ export default function Invitation() {
     sorts: [
       { field: "invite_id", order: "DESC" }
     ],
-    filters: [
-      { field: "status", operator: "$in", value: [1,2] }
-    ]
+
+    fields: [
+    "invite_id",
+    "invite_code",
+    "visitor_name",
+    "visitor_mobile",
+    "visitor_email",
+    "visitor_type_name",
+    "visitor_type",
+    "purpose_name",
+    "purpose_id",
+    "invite_date",
+    "location_name",
+    "location_id",
+    "status_name",
+    "status",
+    "visit_id",
+    "comment",
+  ],
   });
       console.log(res);
       setTableData(res.data.data);
@@ -55,44 +79,72 @@ export default function Invitation() {
       toast.error("Failed to fetch invitations.");
     }
     setLoading(false);
-  };
+  };*/
 
   useEffect(() => {
-    fetchData(page);
+    load({
+    page,
+    limit,
+    sorts: [{ field: "invite_id", order: "DESC" }],
+    fields: [
+    "invite_id",
+    "invite_code",
+    "visitor_name",
+    "visitor_mobile",
+    "visitor_email",
+    "visitor_type_name",
+    "visitor_type",
+    "purpose_name",
+    "purpose_id",
+    "invite_date",
+    "location_name",
+    "location_id",
+    "status_name",
+    "status",
+    "visit_id",
+    "comment",
+  ],
+  });
   }, [page]);
 
-  const handleCancelInvitation = async (row: any) => {
+
+
+const handleCancelInvitation = async (row: any) => {
   try {
-    await crudService.delete(CrudModules.InvitationCancel, row.invite_id);
+    await cancel(row.invite_id, CrudModules.InvitationCancel);
 
     toast.success("Invitation cancelled successfully!");
 
-    setTableData((prev) =>
-      prev.map((r) =>
-        r.invite_id === row.invite_id
-          ? { ...r, status_name: "Cancelled" }
-          : r
-      )
-    );
+    await load({
+      page,
+      limit,
+      sorts: [{ field: "invite_id", order: "DESC" }],
+    });
+
   } catch (err) {
     toast.error("Failed to cancel invitation.");
   }
 };
 
 
+
   return (
     <>
-      <Header onNewClick={() => setOpen(true)} />
+      <InvitationHeader onNewClick={() => setOpen(true)} />
       {open && (
         <div className="fixed inset-0 z-50 bg-black/40 flex justify-center items-start pt-10">
           <div className="bg-white w-full max-w-3xl rounded-lg shadow-lg p-6 relative">
-            <Form
+            <InvitationForm
               onCancel={() => {
                 setOpen(false);
                 setEditData(null);
               }}
               onSuccess={async () => {
-                await fetchData(page); 
+                await load({
+                  page,
+                  limit,
+                  sorts: [{ field: "invite_id", order: "DESC" }],
+                });
                 setOpen(false);
                 setEditData(null);
               }}
@@ -103,8 +155,8 @@ export default function Invitation() {
       )}
       {loading ? <Loader/> : (
         <>
-      <Table
-        data={tableData}
+      <InvitationTable
+        data = {data?.data?? []}
         onEdit={(row) => {
           setEditData(row);
           setOpen(true);

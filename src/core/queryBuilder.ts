@@ -15,6 +15,7 @@ export type QueryParams = {
   limit?: number;
   sorts?: any[];
   filters?: any[];
+  fields?: string[];
 };
 
 
@@ -23,6 +24,7 @@ export function Builder(params: {
   limit?: number;
   sorts?: Sort[];
   filters?: Filter[];
+  fields?: string[];
 }) {
   const query: string[] = [];
 
@@ -47,6 +49,11 @@ export function Builder(params: {
       `filter[${i}]=${f.field}||${f.operator}||${f.value}`
     );
   });
+
+  // fields
+  if (params.fields && params.fields.length > 0) {
+    query.push(`fields=${params.fields.join(",")}`);
+  }
 
   return query.length ? `?${query.join("&")}` : "";
 }

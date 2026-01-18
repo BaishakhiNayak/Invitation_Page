@@ -25,7 +25,7 @@ type Props = {
   onCancel: (row: any) => Promise<void>;
 };
 
-const InvitationTable = ({ data,onEdit, onCancel}: Props) => {
+const InvitationTable = ({ data ,onEdit, onCancel}: Props) => {
 
  const [cancelRow, setCancelRow] = useState<any>(null);
 const [confirmOpen, setConfirmOpen] = useState(false);

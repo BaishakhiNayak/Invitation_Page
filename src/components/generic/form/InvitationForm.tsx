@@ -2,18 +2,10 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 
-
-import MasterService from "@/services/master.service";
-
 import { MdClose } from "react-icons/md";
 import { toast } from 'react-toastify';
 
-
-import CrudService from "@/services/crud.service";
-import { CrudModules } from "@/lib/endpoints";
-
-import { GENERIC_MASTER_MODULES } from "@/lib/endpoints";
-
+import { CrudModules } from "@/src/core/constant";
 
 
 import {
@@ -28,8 +20,10 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import * as yup from "yup";
+import { GenericMasterModules } from "@/src/core/constant";
+import useCrud from "@/src/hooks/useCrud";
+import MasterService from "@/src/services/genericMaster.service";
 
-const crudService = new CrudService();
 
 export const invitationSchema = yup.object({
   name: yup.string().required("Name required"),
@@ -42,7 +36,7 @@ export const invitationSchema = yup.object({
   comment: yup.string(),
 });
 
-const Form = ({ onCancel, onSuccess, editData }: any) => {
+const InvitationForm = ({ onCancel, onSuccess, editData }: any) => {
   const {
     register,
     handleSubmit,
@@ -52,18 +46,25 @@ const Form = ({ onCancel, onSuccess, editData }: any) => {
     resolver: yupResolver(invitationSchema),
   });
 
+  const {
+    create,
+    update,
+  } = useCrud<any>(CrudModules.Invitation);
+  
+
   const [visitorTypes, setVisitorTypes] = useState<any[]>([]);
   const [purposes, setPurposes] = useState<any[]>([]);
   const [locations, setLocations] = useState<any[]>([]);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [formData, setformData] = useState<any>(null);
+  
 
 
   const loadMasters = async () => {
     try {
-      const vtRes = await MasterService.getByModule(GENERIC_MASTER_MODULES.VisitorType); 
-      const pRes  = await MasterService.getByModule(GENERIC_MASTER_MODULES.Purpose); 
-      const lRes  = await MasterService.getByModule(GENERIC_MASTER_MODULES.Location); 
+      const vtRes = await MasterService.getByModule(GenericMasterModules.VisitorType);     
+      const pRes  = await MasterService.getByModule(GenericMasterModules.Purpose); 
+      const lRes  = await MasterService.getByModule(GenericMasterModules.Location); 
 
       setVisitorTypes(vtRes.data);
       setPurposes(pRes.data);
@@ -78,6 +79,8 @@ const Form = ({ onCancel, onSuccess, editData }: any) => {
     loadMasters();
   }, [])
 
+
+  
   const getMinDateTime = () => {
   const now = new Date();
   now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
@@ -295,14 +298,17 @@ useEffect(() => {
         try{let res;
 
         if (editData) {
-          res = await crudService.update(CrudModules.Invitation, editData.invite_id, payload);
+          //res = await crudService.update(CrudModules.Invitation, editData.invite_id, payload);
+          await update(editData.invite_id, payload);     
           toast.success("Invitation updated successfully!");
+
         } else {
-          res = await crudService.submit(CrudModules.Invitation, payload);
+          //res = await crudService.submit(CrudModules.Invitation, payload);
+          await create(payload);
           toast.success("Invitation created successfully!");
         }
 
-        onSuccess(res.data);
+        onSuccess();
         setConfirmOpen(false);
         } catch (error) {
           toast.error("An error occurred. Please try again.");
@@ -317,5 +323,5 @@ useEffect(() => {
 </>
   )
 };
-export default Form;
+export default InvitationForm;
 
